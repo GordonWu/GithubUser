@@ -7,12 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.paging.PagingData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import gordon.lab.searchuser.core.network.GithubApi
 import gordon.lab.searchuser.customized.adapter.SearchUserAdapter
-import gordon.lab.searchuser.data.UserItems
 import gordon.lab.searchuser.databinding.ActivityMainBinding
 import gordon.lab.searchuser.repository.SearchUserRepository
 import gordon.lab.searchuser.viewmodel.MainActivityFactory
@@ -25,7 +23,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var userListAdapter:SearchUserAdapter
-//    private val model: MainActivityViewModel by viewModels({ MainActivityFactory() })
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var viewModelFactory: MainActivityFactory
 
@@ -58,7 +55,6 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, viewModelFactory)[MainActivityViewModel::class.java]
 
         viewModel.currentName.observe(this, currentNameObserver)
-//        viewModel.userList.observe(this, userListObserver)
     }
 
     private fun search(query: String, page:Int) {
@@ -69,7 +65,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 
 
     // Event Handlers

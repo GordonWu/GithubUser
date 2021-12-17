@@ -2,11 +2,8 @@ package gordon.lab.searchuser.core.network
 
 import android.util.Log
 import gordon.lab.searchuser.data.SearchUser
-import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -19,7 +16,7 @@ interface GithubApi {
         private const val baseURL="https://api.github.com"
 
         fun create(): GithubApi {
-            val logger = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger { Log.d("API", it) })
+            val logger = HttpLoggingInterceptor { Log.d("API", it) }
             logger.level = HttpLoggingInterceptor.Level.BASIC
 
             val client = OkHttpClient.Builder()
