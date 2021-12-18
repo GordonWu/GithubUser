@@ -19,6 +19,7 @@ object SearchUserAppModule {
 
     @Provides
     fun GithubApiProvides() :GithubApi{
+
             val logger = HttpLoggingInterceptor { Log.d("API", it) }
             logger.level = HttpLoggingInterceptor.Level.BASIC
 

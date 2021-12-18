@@ -1,12 +1,17 @@
 package gordon.lab.searchuser
 
+import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +22,7 @@ import gordon.lab.searchuser.databinding.ActivityMainBinding
 import gordon.lab.searchuser.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -47,6 +53,13 @@ class MainActivity : AppCompatActivity() {
             adapter = userListAdapter
         }
 
+        lifecycleScope.launch {
+            userListAdapter.loadStateFlow.collectLatest { loadStates ->
+                binding.progressBar.isVisible = loadStates.refresh is LoadState.Loading
+                if (loadStates.refresh is LoadState.Error)
+                    Toast.makeText(applicationContext, getText(R.string.toast_error_msg), Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun initViewModel(){
@@ -75,6 +88,11 @@ class MainActivity : AppCompatActivity() {
             val user = binding.etSearchUser.text.toString()
             viewModel.setCurrentName(user)
             search(user,1)
+        }
+
+        this.currentFocus?.let { view ->
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 

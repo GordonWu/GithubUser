@@ -7,6 +7,7 @@ import gordon.lab.searchuser.data.model.UserItems
 import retrofit2.HttpException
 import java.io.IOException
 
+
 class SearchUserPagingSource(private val api: GithubApi, private val queryUser:String ):PagingSource<Int, UserItems>() {
 
     override fun getRefreshKey(state: PagingState<Int, UserItems>): Int? {
@@ -21,7 +22,7 @@ class SearchUserPagingSource(private val api: GithubApi, private val queryUser:S
         return try {
             val data = api.getUserList(q = queryUser,sort = "desc",order = "indexed", per_page =  30, page = pageIndex)
             LoadResult.Page(
-                data = data.UserItems!!,
+                data = data.UserItems,
                 prevKey = if (pageIndex == 1) null else pageIndex -1 ,
                 nextKey =  if (data.UserItems.isEmpty()) null else pageIndex + 1,
                 )
