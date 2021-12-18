@@ -2,46 +2,44 @@ package gordon.lab.searchuser.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import gordon.lab.searchuser.data.UserItems
-import gordon.lab.searchuser.repository.SearchUserRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import gordon.lab.searchuser.data.model.UserItems
+import gordon.lab.searchuser.data.repository.SearchUserRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
+@HiltViewModel
+class MainActivityViewModel @Inject constructor(private val repository: SearchUserRepository) : ViewModel() {
 
-class MainActivityViewModel (private val repository: SearchUserRepository) : ViewModel() {
-
-    // Create a LiveData with a String
-    val currentName: MutableLiveData<String> by lazy {
+    val currentName :MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }
 
-    val userList: MutableLiveData<PagingData<UserItems>> by lazy{
-        MutableLiveData<PagingData<UserItems>>()
-    }
-    private var currentQueryPage: Int = 1
-
-    private var currentSearchResult: Flow<PagingData<UserItems>>? = null
-
-
-    fun getUserListLiveData(query:String,page:Int) {
-        val response = repository.getUserListLiveData(query,page).cachedIn(viewModelScope)
-        userList.value = response.value
-    }
-
+    // flow test
+    private var searchFlowResult: Flow<PagingData<UserItems>>? = null
     fun getUserListFlow(query:String, page:Int): Flow<PagingData<UserItems>> {
-        val lastResult = currentSearchResult
+        val lastResult = searchFlowResult
         if (query == currentName.value && lastResult != null) {
             return lastResult
         }
         currentName.value = query
-        currentQueryPage = page
 
-        val newResult: Flow<PagingData<UserItems>> = repository.getUserListFlow(query,page)
-            .cachedIn(viewModelScope)
-        currentSearchResult = newResult
+        val newResult = repository.getUserListFlow(query, page).cachedIn(viewModelScope)
+        searchFlowResult = newResult
         return newResult
+    }
+
+    //livedata
+    var searchLiveDataResult = currentName.switchMap {
+        repository.getUserListLiveData(it,1).cachedIn(viewModelScope)
+    }
+
+    fun setCurrentName(query:String){
+        currentName.postValue(query)
     }
 
 }

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import gordon.lab.searchuser.customized.ui.SearchUserViewHolder
-import gordon.lab.searchuser.data.UserItems
+import gordon.lab.searchuser.data.model.UserItems
 import gordon.lab.searchuser.databinding.RowUserItemBinding
 
 class SearchUserAdapter : PagingDataAdapter<UserItems, SearchUserViewHolder>(USER_COMPARATOR) {

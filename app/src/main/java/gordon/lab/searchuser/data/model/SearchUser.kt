@@ -1,4 +1,4 @@
-package gordon.lab.searchuser.data
+package gordon.lab.searchuser.data.model
 
 import com.google.gson.annotations.SerializedName
 
