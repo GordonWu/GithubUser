@@ -12,12 +12,10 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
-import androidx.paging.PagingData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import gordon.lab.searchuser.customized.adapter.SearchUserAdapter
-import gordon.lab.searchuser.data.model.UserItems
 import gordon.lab.searchuser.databinding.ActivityMainBinding
 import gordon.lab.searchuser.viewmodel.MainActivityViewModel
 import kotlinx.coroutines.Job

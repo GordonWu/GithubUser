@@ -19,6 +19,7 @@ class SearchUserPagingSource(private val api: GithubApi, private val queryUser:S
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, UserItems> {
         val pageIndex = params.key ?: 1
+
         return try {
             val data = api.getUserList(q = queryUser,sort = "desc",order = "indexed", per_page =  30, page = pageIndex)
             LoadResult.Page(
@@ -26,6 +27,7 @@ class SearchUserPagingSource(private val api: GithubApi, private val queryUser:S
                 prevKey = if (pageIndex == 1) null else pageIndex -1 ,
                 nextKey =  if (data.UserItems.isEmpty()) null else pageIndex + 1,
                 )
+
         } catch (e: IOException) {
             LoadResult.Error(e)
         } catch (e: HttpException) {

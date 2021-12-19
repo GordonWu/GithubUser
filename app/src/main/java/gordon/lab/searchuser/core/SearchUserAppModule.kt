@@ -7,8 +7,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import gordon.lab.searchuser.Constants.baseURL
 import gordon.lab.searchuser.core.network.GithubApi
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.Request
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -20,11 +21,25 @@ object SearchUserAppModule {
     @Provides
     fun GithubApiProvides() :GithubApi{
 
-            val logger = HttpLoggingInterceptor { Log.d("API", it) }
-            logger.level = HttpLoggingInterceptor.Level.BASIC
+//            val logger = HttpLoggingInterceptor { Log.d("API", it) }
+//            logger.level = HttpLoggingInterceptor.Level.BASIC
 
             val client = OkHttpClient.Builder()
-                .addInterceptor(logger)
+                .addInterceptor(Interceptor { chain ->
+                    val request: Request = chain.request()
+                    val response = chain.proceed(request)
+
+                     when(response.code){
+                        422->{
+                            Log.d("API", "Unprocessable Entity")
+                        }
+                        503->{
+                            Log.d("API", "Service Unavailable")
+                        }
+                     }
+
+                    response
+                })
                 .build()
 
             return Retrofit.Builder()
