@@ -1,23 +1,23 @@
 package gordon.lab.searchuser.customized.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.paging.PagingDataAdapter
-import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import gordon.lab.searchuser.customized.ui.userlist.UserListViewHolder
 import gordon.lab.searchuser.data.model.UserItems
 import gordon.lab.searchuser.databinding.RowUserItemBinding
+import java.lang.ref.WeakReference
+import kotlin.reflect.KFunction
 
-class SearchUserAdapter : PagingDataAdapter<UserItems, UserListViewHolder>(USER_COMPARATOR) {
-    companion object {
-        val USER_COMPARATOR = object : DiffUtil.ItemCallback<UserItems>() {
-            override fun areContentsTheSame(oldItem: UserItems, newItem: UserItems): Boolean =
-                oldItem == newItem
+class UserListAdapter:RecyclerView.Adapter<UserListViewHolder>() {
 
-            override fun areItemsTheSame(oldItem: UserItems, newItem: UserItems): Boolean =
-                oldItem.id == newItem.id
+    var dataModel = arrayListOf<UserItems>()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
         }
-    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserListViewHolder {
         val itemBinding = RowUserItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -25,9 +25,18 @@ class SearchUserAdapter : PagingDataAdapter<UserItems, UserListViewHolder>(USER_
     }
 
     override fun onBindViewHolder(holder: UserListViewHolder, position: Int) {
-        getItem(position)?.let {
-            holder.bind(it)
-        }
+        holder.bind(dataModel[position])
+
     }
+
+    override fun getItemCount(): Int {
+        return dataModel.size
+    }
+
+    fun setDataModel(mBookshelf: List<UserItems>) {
+        dataModel.addAll(mBookshelf)
+        notifyDataSetChanged()
+    }
+
 
 }

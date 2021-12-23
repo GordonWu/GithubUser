@@ -11,9 +11,9 @@ class UserListViewHolder(private val itemBinding: RowUserItemBinding) :RecyclerV
 
     fun bind(i: UserItems) {
         item = i
-        if (item.avatarUrl.startsWith("https")) {
+        if (item.avatarURL.startsWith("https")) {
             GlideApp.with(itemBinding.root)
-                .load(item.avatarUrl)
+                .load(item.avatarURL)
                 .centerCrop()
                 .into(itemBinding.ivUserAvatar)
         }
