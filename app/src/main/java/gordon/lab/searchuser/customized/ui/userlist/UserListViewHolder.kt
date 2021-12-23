@@ -1,11 +1,11 @@
-package gordon.lab.searchuser.customized.ui
+package gordon.lab.searchuser.customized.ui.userlist
 
 import androidx.recyclerview.widget.RecyclerView
 import gordon.lab.searchuser.core.GlideApp
 import gordon.lab.searchuser.data.model.UserItems
 import gordon.lab.searchuser.databinding.RowUserItemBinding
 
-class SearchUserViewHolder(private val itemBinding: RowUserItemBinding) :RecyclerView.ViewHolder(itemBinding.root){
+class UserListViewHolder(private val itemBinding: RowUserItemBinding) :RecyclerView.ViewHolder(itemBinding.root){
 
     private lateinit var item: UserItems
 

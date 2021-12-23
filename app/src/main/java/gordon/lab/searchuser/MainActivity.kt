@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView(){
+
         binding.btnSend.setOnClickListener(onBtnSendClickListener)
         binding.btnClean.setOnClickListener(onBtnCleanClickListener)
 

@@ -2,9 +2,9 @@ package gordon.lab.searchuser.data.repository
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.bumptech.glide.load.HttpException
 import gordon.lab.searchuser.core.network.GithubApi
 import gordon.lab.searchuser.data.model.UserItems
-import retrofit2.HttpException
 import java.io.IOException
 
 
