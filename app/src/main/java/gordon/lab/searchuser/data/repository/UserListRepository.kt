@@ -9,6 +9,7 @@ class UserListRepository @Inject constructor (private val api: GithubApi) {
     fun getAPI() = api
 
     private val mUserInfoCache: MutableList<UserItems> = mutableListOf()
+    val userInfoCache: List<UserItems> get() = mUserInfoCache
 
     data class ApiResult(
         val userInfoList: List<UserItems>

@@ -20,13 +20,16 @@ import gordon.lab.searchuser.util.MainState
 import gordon.lab.searchuser.viewmodel.SharedViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import android.content.Intent
+import android.net.Uri
+import android.webkit.URLUtil
+
 
 class UserDetailFragment:Fragment() {
 
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private var binding: FragmentUserDetailBinding? = null
     private val args: UserDetailFragmentArgs by navArgs()
-    private var userDetail: UserDetail? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,7 +60,7 @@ class UserDetailFragment:Fragment() {
         }
     }
 
-    private fun FragmentUserDetailBinding.initUserLayout() {
+    private fun initUserLayout() {
         args.username.let {
             lifecycleScope.launch {
                 sharedViewModel.userIntent.send(MainIntent.FetchUserDetail(it))
@@ -82,17 +85,28 @@ class UserDetailFragment:Fragment() {
                             .load(it.result.avatarUrl)
                             .circleCrop()
                             .into(imgAvatar)
+
                         tvUserLogin.text = String.format(getString(R.string.str_detail_login_placeholder),it.result.login)
                         tvUserName.text = it.result.name
                         tvUserEmail.text = it.result.email
                         tvUserLocation.text = it.result.location?:getString(R.string.str_detail_location_unset)
                         tvUserCompany.text = it.result.company?:getString(R.string.str_detail_company_unset)
                         tvUserBio.text = it.result.bio?:getString(R.string.str_detail_bio_unset)
-
+                        val url =it.result.blog
+                            if(URLUtil.isValidUrl(url)){
+                                linkWrapper.isVisible = true
+                                tvUserLink.text = url
+                                tvUserLink.setOnClickListener {
+                                val intent = Intent()
+                                intent.action = Intent.ACTION_VIEW
+                                intent.data = Uri.parse(url)
+                                startActivity(intent)
+                                }
+                            }
                     }
                     is MainState.Error->{
-
                         progressBar.isVisible = it.isLoading
+                        Toast.makeText(context,it.error, Toast.LENGTH_LONG).show()
                     }
                 }
             }
