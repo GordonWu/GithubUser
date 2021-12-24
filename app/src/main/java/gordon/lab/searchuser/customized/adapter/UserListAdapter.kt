@@ -1,14 +1,12 @@
 package gordon.lab.searchuser.customized.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import gordon.lab.searchuser.customized.ui.userlist.UserListViewHolder
 import gordon.lab.searchuser.data.model.UserItems
 import gordon.lab.searchuser.databinding.RowUserItemBinding
-import java.lang.ref.WeakReference
-import kotlin.reflect.KFunction
+import kotlin.reflect.KFunction1
 
 class UserListAdapter:RecyclerView.Adapter<UserListViewHolder>() {
 
@@ -17,7 +15,8 @@ class UserListAdapter:RecyclerView.Adapter<UserListViewHolder>() {
             field = value
             notifyDataSetChanged()
         }
-
+    private var onLoadMoreCall: (() -> Unit)? = null
+    private var onItemClick: KFunction1<String, Unit>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserListViewHolder {
         val itemBinding = RowUserItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -25,8 +24,12 @@ class UserListAdapter:RecyclerView.Adapter<UserListViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: UserListViewHolder, position: Int) {
-        holder.bind(dataModel[position])
-
+        holder.bind(dataModel[position], onItemClick)
+        if (position == itemCount - 1){
+            holder.itemView.post {
+                onLoadMoreCall?.invoke()
+            }
+        }
     }
 
     override fun getItemCount(): Int {
@@ -38,5 +41,11 @@ class UserListAdapter:RecyclerView.Adapter<UserListViewHolder>() {
         notifyDataSetChanged()
     }
 
+    fun setLoadMore( setLoadMoreCall: (() -> Unit)? = null) {
+        onLoadMoreCall = setLoadMoreCall
+    }
 
+    fun setOnItemClick(setItemLick: KFunction1<String, Unit>? = null) {
+        onItemClick = setItemLick
+    }
 }

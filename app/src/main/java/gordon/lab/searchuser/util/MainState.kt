@@ -1,11 +1,12 @@
 package gordon.lab.searchuser.util
 
-import gordon.lab.searchuser.data.model.UserList
+import gordon.lab.searchuser.data.model.UserDetail
+import gordon.lab.searchuser.data.repository.UserListRepository
 
 sealed class MainState{
     object Idle : MainState()
     data class  Loading(val isLoading:Boolean = true) : MainState()
-    data class LoadMore(val isLoading:Boolean = true): MainState()
-    class DataFetched(val userList : UserList, val isLoading:Boolean = false): MainState()
+    class DataFetched(var result: UserListRepository.ApiResult, val isLoading:Boolean = false): MainState()
+    class DetailFetched(var result: UserDetail, val isLoading:Boolean = false): MainState()
     data class Error(val error : String?,val isLoading:Boolean = false): MainState()
 }

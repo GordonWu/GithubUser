@@ -1,6 +1,7 @@
 package gordon.lab.searchuser.customized.ui.userlist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +13,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import gordon.lab.searchuser.databinding.FragmentUserListBinding
 import gordon.lab.searchuser.util.NavControllerHelper
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import gordon.lab.searchuser.customized.adapter.UserListAdapter
-import gordon.lab.searchuser.data.model.UserItems
 import gordon.lab.searchuser.util.MainIntent
 import gordon.lab.searchuser.util.MainState
 import gordon.lab.searchuser.viewmodel.SharedViewModel
@@ -41,17 +40,14 @@ class UserListFragment: Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         binding?.run {
             initUserRecycler()
             initViewModelObserve()
             lifecycleScope.launch {
-                sharedViewModel.userIntent.send(MainIntent.FetchUserList(0))
+                sharedViewModel.userIntent.send(MainIntent.FetchUserList)
             }
         }
     }
-
-
 
     override fun onResume() {
         super.onResume()
@@ -70,6 +66,8 @@ class UserListFragment: Fragment() {
 
     private fun FragmentUserListBinding.initUserRecycler() {
         userList.adapter = userListAdapter
+        userListAdapter.setLoadMore(sharedViewModel::fetchUserList)
+        userListAdapter.setOnItemClick(::onUserItemClick)
         userList.layoutManager = LinearLayoutManager(context)
         userList.addItemDecoration(DividerItemDecoration(context,DividerItemDecoration.VERTICAL))
     }
@@ -85,7 +83,7 @@ class UserListFragment: Fragment() {
                         progressBar.isVisible = it.isLoading
                     }
                     is MainState.DataFetched->{
-                        userListAdapter.setDataModel(it.userList)
+                        userListAdapter.setDataModel(it.result.userInfoList)
                         progressBar.isVisible = it.isLoading
                     }
                     is MainState.Error->{
