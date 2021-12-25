@@ -27,14 +27,12 @@ class UserDetailViewModel @Inject constructor(private val repository: UserDetail
     }
     private fun fetchUserDetail(username:String){
         ioJob {
-            ioJob {
-                setState { copy(userDetailState = UserDetailState.Loading()) }
-                try{
-                    val result = repository.getUserDetail(username)
-                    setState { copy(userDetailState = UserDetailState.Fetched(result)) }
-                }catch (e:Exception){
-                    setState { copy(userDetailState = UserDetailState.Error(e.localizedMessage)) }
-                }
+            setState { copy(userDetailState = UserDetailState.Loading()) }
+            try{
+                val result = repository.getUserDetail(username)
+                setState { copy(userDetailState = UserDetailState.Fetched(result)) }
+            }catch (e:Exception){
+                setState { copy(userDetailState = UserDetailState.Error(e.localizedMessage)) }
             }
         }
     }

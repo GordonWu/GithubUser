@@ -1,6 +1,7 @@
 package gordon.lab.searchuser.core.network
 
 import gordon.lab.searchuser.core.SearchUserAppModule
+import gordon.lab.searchuser.data.repository.UserDetailRepository
 import gordon.lab.searchuser.data.repository.UserListRepository
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
@@ -11,7 +12,10 @@ import org.junit.Test
 class GithubApiTest {
 
     @MockK
-    private lateinit var repo: UserListRepository
+    private lateinit var listRepo: UserListRepository
+
+    @MockK
+    private lateinit var detailRepo: UserDetailRepository
 
     @Before
     fun setup() {
@@ -20,10 +24,10 @@ class GithubApiTest {
 
     @Test
     fun getUserList()   {
-        repo = UserListRepository(SearchUserAppModule.GithubApiProvides())
+        listRepo = UserListRepository(SearchUserAppModule.GithubApiProvides())
         //init call
         var data = runBlocking {
-            repo.getUserList().userList
+            listRepo.getUserList().userList
         }
 
         //test first page
@@ -33,7 +37,7 @@ class GithubApiTest {
 
         // next page call
         data = runBlocking {
-            repo.getUserList().userList
+            listRepo.getUserList().userList
         }
         //test second page
         assert(data.size == 30)
@@ -43,9 +47,12 @@ class GithubApiTest {
 
     @Test
     fun getUserDetail(){
+        detailRepo = UserDetailRepository(SearchUserAppModule.GithubApiProvides())
+        //init call
         val data = runBlocking {
-            SearchUserAppModule.GithubApiProvides().getUserDetail("GordonWu")
+            detailRepo.getUserDetail("GordonWu")
         }
+
         assert(data.login == "GordonWu")
         assert(data.id == 6059222)
         assert(data.location == "Taiwan. Taipei")
