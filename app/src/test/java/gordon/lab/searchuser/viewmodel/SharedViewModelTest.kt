@@ -4,6 +4,8 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import gordon.lab.searchuser.core.SearchUserAppModule.GithubApiProvides
 import gordon.lab.searchuser.core.network.GithubApi
+import gordon.lab.searchuser.data.model.UserItems
+import gordon.lab.searchuser.data.model.UserList
 import gordon.lab.searchuser.data.repository.UserListRepository
 import gordon.lab.searchuser.util.MainCoroutineRule
 import gordon.lab.searchuser.util.MainIntent
@@ -70,4 +72,11 @@ import org.junit.*
 
         Assert.assertArrayEquals(expect, testPassed);
     }
-}
+
+     private fun mockUserList(size: Int): List<UserItems> {
+         return (0 until size).map {
+             UserItems(id = it , login = "login$it", avatarURL =  "avatar$it")
+         }
+     }
+
+ }
