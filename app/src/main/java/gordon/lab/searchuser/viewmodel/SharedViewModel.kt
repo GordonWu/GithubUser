@@ -63,7 +63,7 @@ class SharedViewModel @Inject constructor(private val repository: UserListReposi
     }
 
     fun fetchUserList(){
-        viewModelScope.launch {
+        ioJob {
             _state.value = MainState.Loading()
             _state.value = try{
                 MainState.DataFetched(repository.getUserList())
@@ -74,7 +74,7 @@ class SharedViewModel @Inject constructor(private val repository: UserListReposi
     }
 
     private fun fetchUserDetail(username:String){
-        viewModelScope.launch {
+        ioJob {
             _state.value = MainState.Loading()
             _state.value = try{
                 MainState.DetailFetched(repository.getAPI().getUserDetail(username))
