@@ -7,14 +7,18 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import gordon.lab.searchuser.data.repository.UserListRepository
 import gordon.lab.searchuser.util.MainIntent
 import gordon.lab.searchuser.util.MainState
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(private val repository: UserListRepository) : ViewModel() {
+
+    var ui: CoroutineDispatcher = Dispatchers.Main
+    var io: CoroutineDispatcher =  Dispatchers.IO
+    var background: CoroutineDispatcher = Dispatchers.Default
 
     var userIntent = Channel<MainIntent>(Channel.UNLIMITED)
     private val _state = MutableStateFlow<MainState>(MainState.Idle)
@@ -25,8 +29,26 @@ class SharedViewModel @Inject constructor(private val repository: UserListReposi
         handleIntent()
     }
 
+    fun ViewModel.uiJob(block: suspend CoroutineScope.() -> Unit): Job {
+        return viewModelScope.launch(ui) {
+            block()
+        }
+    }
+
+    fun ViewModel.ioJob(block: suspend CoroutineScope.() -> Unit): Job {
+        return viewModelScope.launch(io) {
+            block()
+        }
+    }
+
+    fun ViewModel.backgroundJob(block: suspend CoroutineScope.() -> Unit): Job {
+        return viewModelScope.launch(background) {
+            block()
+        }
+    }
+
     private fun handleIntent(){
-        viewModelScope.launch {
+        ioJob {
             userIntent.consumeAsFlow().collect {
                 when(it){
                     is MainIntent.FetchUserList -> {
@@ -46,8 +68,7 @@ class SharedViewModel @Inject constructor(private val repository: UserListReposi
             _state.value = try{
                 MainState.DataFetched(repository.getUserList())
             }catch (e:Exception){
-                Log.e("gw",e.localizedMessage)
-                MainState.Error(e.localizedMessage)
+                 MainState.Error(e.localizedMessage)
             }
         }
     }
@@ -58,8 +79,7 @@ class SharedViewModel @Inject constructor(private val repository: UserListReposi
             _state.value = try{
                 MainState.DetailFetched(repository.getAPI().getUserDetail(username))
             }catch (e:Exception){
-                Log.e("gw",e.localizedMessage)
-                MainState.Error(e.localizedMessage)
+                 MainState.Error(e.localizedMessage)
             }
         }
     }

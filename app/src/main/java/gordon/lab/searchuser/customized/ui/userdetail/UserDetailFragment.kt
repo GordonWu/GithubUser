@@ -1,9 +1,12 @@
 package gordon.lab.searchuser.customized.ui.userdetail
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -13,16 +16,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import gordon.lab.searchuser.R
-import gordon.lab.searchuser.data.model.UserDetail
 import gordon.lab.searchuser.databinding.FragmentUserDetailBinding
 import gordon.lab.searchuser.util.MainIntent
 import gordon.lab.searchuser.util.MainState
 import gordon.lab.searchuser.viewmodel.SharedViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import android.content.Intent
-import android.net.Uri
-import android.webkit.URLUtil
 
 
 class UserDetailFragment:Fragment() {

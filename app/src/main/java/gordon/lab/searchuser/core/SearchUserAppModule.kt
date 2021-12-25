@@ -20,10 +20,6 @@ object SearchUserAppModule {
 
     @Provides
     fun GithubApiProvides() :GithubApi{
-
-//            val logger = HttpLoggingInterceptor { Log.d("API", it) }
-//            logger.level = HttpLoggingInterceptor.Level.BASIC
-
             val client = OkHttpClient.Builder()
                 .addInterceptor(Interceptor { chain ->
                     val request: Request = chain.request()

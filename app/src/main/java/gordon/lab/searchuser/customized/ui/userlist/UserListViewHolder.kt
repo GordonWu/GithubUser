@@ -6,7 +6,7 @@ import gordon.lab.searchuser.data.model.UserItems
 import gordon.lab.searchuser.databinding.RowUserItemBinding
 import kotlin.reflect.KFunction1
 
-class UserListViewHolder( private val itemBinding: RowUserItemBinding,) :RecyclerView.ViewHolder(itemBinding.root){
+class UserListViewHolder( private val itemBinding: RowUserItemBinding) :RecyclerView.ViewHolder(itemBinding.root){
 
     private lateinit var item: UserItems
 

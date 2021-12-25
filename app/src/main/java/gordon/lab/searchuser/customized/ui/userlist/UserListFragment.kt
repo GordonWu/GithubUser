@@ -60,8 +60,7 @@ class UserListFragment: Fragment() {
     }
 
     private fun onUserItemClick(username: String) {
-        val directions = UserListFragmentDirections.actionUserListFragmentToUserDetailFragment(username)
-        navHelper.navigate(findNavController(), directions)
+        navHelper.navigate(findNavController(), UserListFragmentDirections.actionUserListFragmentToUserDetailFragment(username))
     }
 
     private fun FragmentUserListBinding.initUserRecycler() {

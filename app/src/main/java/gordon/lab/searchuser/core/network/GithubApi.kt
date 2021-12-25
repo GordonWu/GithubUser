@@ -9,8 +9,6 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface GithubApi {
-
-
     @Headers("Accept: application/vnd.github.v3+json")
     @GET("/users")
     suspend fun getUserList(@Query("since") since:Int): UserList
