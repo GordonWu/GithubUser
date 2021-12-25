@@ -11,6 +11,7 @@ import gordon.lab.searchuser.util.MainState
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,7 +42,8 @@ import org.junit.*
     @Test
     fun testState() = coroutineRule.runBlockingTest {
         repo = UserListRepository(GithubApiProvides())
-        every { repo.userInfoCache } returns emptyList()
+
+        every { repo.userListCache } returns emptyList()
         sharedViewModel = SharedViewModel(repo)
 
         // idle, loading, fetch, error, error true meaning we don't expect get error state for this time

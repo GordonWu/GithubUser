@@ -82,7 +82,7 @@ class UserListFragment: Fragment() {
                         progressBar.isVisible = it.isLoading
                     }
                     is MainState.DataFetched->{
-                        userListAdapter.setDataModel(it.result.userInfoList)
+                        userListAdapter.setDataModel(it.result.userList)
                         progressBar.isVisible = it.isLoading
                     }
                     is MainState.Error->{

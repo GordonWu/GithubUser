@@ -52,7 +52,7 @@ class SharedViewModel @Inject constructor(private val repository: UserListReposi
             userIntent.consumeAsFlow().collect {
                 when(it){
                     is MainIntent.FetchUserList -> {
-                        if (repository.userInfoCache.isEmpty()) {
+                        if (repository.userListCache.isEmpty()) {
                             fetchUserList()
                         }
                     }

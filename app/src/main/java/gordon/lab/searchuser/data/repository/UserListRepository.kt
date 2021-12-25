@@ -8,19 +8,19 @@ class UserListRepository @Inject constructor (private val api: GithubApi) {
 
     fun getAPI() = api
 
-    private val mUserInfoCache: MutableList<UserItems> = mutableListOf()
-    val userInfoCache: List<UserItems> get() = mUserInfoCache
+    private val mUserListCache: MutableList<UserItems> = mutableListOf()
+    val userListCache: List<UserItems> get() = mUserListCache
 
     data class ApiResult(
-        val userInfoList: List<UserItems>
+        val userList: List<UserItems> = arrayListOf()
     )
 
     suspend fun getUserList(): ApiResult {
-        val lastId = if (mUserInfoCache.isNotEmpty()) {
-            mUserInfoCache.last().id
+        val lastId = if (mUserListCache.isNotEmpty()) {
+            mUserListCache.last().id
         } else null
 
         return ApiResult(api.getUserList(lastId?:0)
-            .also { mUserInfoCache.addAll(it) })
+            .also { mUserListCache.addAll(it) })
     }
 }
