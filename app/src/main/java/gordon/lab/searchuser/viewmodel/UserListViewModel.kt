@@ -32,7 +32,7 @@ class UserListViewModel @Inject constructor(private val repository: UserListRepo
             setState { copy(userListState = UserListState.Loading()) }
             try{
                 val result = repository.getUserList()
-                setState { copy(userListState = UserListState.DataFetched(result)) }
+                setState { copy(userListState = UserListState.Fetched(result)) }
              }catch (e:Exception){
                 setState { copy(userListState = UserListState.Error(e.localizedMessage)) }
             }
