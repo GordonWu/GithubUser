@@ -1,6 +1,7 @@
 package gordon.lab.searchuser.viewmodel
 
 import dagger.hilt.android.lifecycle.HiltViewModel
+import gordon.lab.searchuser.core.AsyncTaskDelegate
 import gordon.lab.searchuser.customized.protocol.MainEvent
 import gordon.lab.searchuser.customized.protocol.uiState
 import gordon.lab.searchuser.customized.ui.userlist.UserListState
@@ -8,7 +9,9 @@ import gordon.lab.searchuser.data.repository.UserListRepository
 import javax.inject.Inject
 
 @HiltViewModel
-class UserListViewModel @Inject constructor(private val repository: UserListRepository) : BaseViewModel<MainEvent, UserListViewModel.State>() {
+class UserListViewModel @Inject constructor(private val repository: UserListRepository,
+                                            private val asyncTaskDelegate: AsyncTaskDelegate) :
+    BaseViewModel<MainEvent, UserListViewModel.State>(asyncTaskDelegate) {
 
     data class State(
         val userListState: UserListState
@@ -28,7 +31,7 @@ class UserListViewModel @Inject constructor(private val repository: UserListRepo
     }
 
     fun fetchUserList(){
-        ioJob {
+        asyncTaskDelegate.ioJob {
             setState { copy(userListState = UserListState.Loading()) }
             try{
                 val result = repository.getUserList()

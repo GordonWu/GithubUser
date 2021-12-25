@@ -52,7 +52,7 @@ class GithubApiTest {
         val data = runBlocking {
             detailRepo.getUserDetail("GordonWu")
         }
-
+        println("user deilt:${data}")
         assert(data.login == "GordonWu")
         assert(data.id == 6059222)
         assert(data.location == "Taiwan. Taipei")

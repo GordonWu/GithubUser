@@ -1,49 +1,54 @@
 package gordon.lab.searchuser.viewmodel
 
-import gordon.lab.searchuser.customized.protocol.MainEvent
+import gordon.lab.searchuser.core.SearchUserAppModule
+import gordon.lab.searchuser.customized.ui.userlist.UserListState
 import gordon.lab.searchuser.data.repository.UserListRepository
-import gordon.lab.searchuser.util.CoroutineTestRule
+import gordon.lab.searchuser.util.InstantExecutorExtension
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.extension.ExtendWith
 
 @ExperimentalCoroutinesApi
+@ExtendWith(InstantExecutorExtension::class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UserListViewModelTest {
 
-    @MockK
+//    private val listRepo = mockkClass(UserListRepository::class)
+     @MockK
     private lateinit var listRepo: UserListRepository
-    private lateinit var viewModel: UserListViewModel
-    var coroutineRule = CoroutineTestRule()
-    private val job = Job()
 
-    @Before
-    fun setup() {
+    @BeforeAll
+    private fun doOnBeforeAll() {
         MockKAnnotations.init(this)
     }
 
     @Test
-    fun testUserListState() = coroutineRule.testDispatcher.runBlockingTest {
-
-        viewModel = UserListViewModel(listRepo)
-        launch {
-            viewModel.viewEvent.collect {
-                print("====SHIT====")
-            }
+    fun testUserListState() = coroutineRule.runBlockingTest{
+        listRepo = UserListRepository(SearchUserAppModule.GithubApiProvides())
+        val viewModel = UserListViewModel( repository = listRepo )
+         viewModel.fetchUserList()
+        if (viewModel.viewState.value.userListState is UserListState.Idle )
+        {
+            print("幹你娘")
         }
+        if (viewModel.viewState.value.userListState is UserListState.Loading )
+        {
+            print("操你嗎")
+        }
+//        delay(3000)
 
-            repeat(10) { _ ->
-                print("====FUCK====")
-                viewModel.setEvent(MainEvent.FetchUserList)
-                delay(1000)
-            }
-            job.cancel()
-
+        if (viewModel.viewState.value.userListState is UserListState.Fetched )
+        {
+            print("塞林揚")
+        }
+        if (viewModel.viewState.value.userListState is UserListState.Error )
+        {
+            print("吃屎吧")
+        }
     }
 }
