@@ -9,6 +9,7 @@ import gordon.lab.searchuser.util.MainState
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
@@ -32,6 +33,7 @@ import org.junit.Test
         MockKAnnotations.init(this)
     }
 
+    @InternalCoroutinesApi
     @ExperimentalCoroutinesApi
     @Test
     fun testState() = coroutineRule.runBlockingTest {
@@ -41,7 +43,7 @@ import org.junit.Test
         sharedViewModel = SharedViewModel(repo)
 
         // idle, loading, fetch, error, error true meaning we don't expect get error state for this time
-        val testPassed = booleanArrayOf(false,false,false,true)
+        val actual = booleanArrayOf(false,false,false,true)
 
         val expect = booleanArrayOf(true, true, true , true)
 
@@ -51,25 +53,25 @@ import org.junit.Test
                 when (it) {
                     is MainState.Idle -> {
                         print("A======")
-                        testPassed[0] = true
+                        actual[0] = true
                     }
                     is MainState.Loading -> {
                         print("B======")
-                        testPassed[1] = true
+                        actual[1] = true
                     }
                     is MainState.DataFetched -> {
                         print("D======")
-                        testPassed[2] = true
+                        actual[2] = true
                     }
                     is MainState.Error -> {
                         print("E======")
-                        testPassed[3] = false
+                        actual[3] = false
                     }
                 }
             }
             print("F======")
 
-            Assert.assertArrayEquals(expect, testPassed);
+            Assert.assertArrayEquals(expect, actual);
         }
 
         job.cancel()
