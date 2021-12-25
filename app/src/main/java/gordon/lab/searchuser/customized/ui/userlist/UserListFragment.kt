@@ -1,7 +1,6 @@
 package gordon.lab.searchuser.customized.ui.userlist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,23 +8,22 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import gordon.lab.searchuser.customized.adapter.UserListAdapter
+import gordon.lab.searchuser.customized.protocol.MainEvent
 import gordon.lab.searchuser.databinding.FragmentUserListBinding
 import gordon.lab.searchuser.util.NavControllerHelper
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
-import gordon.lab.searchuser.customized.adapter.UserListAdapter
-import gordon.lab.searchuser.util.MainIntent
-import gordon.lab.searchuser.util.MainState
-import gordon.lab.searchuser.viewmodel.SharedViewModel
+import gordon.lab.searchuser.viewmodel.UserListViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
 class UserListFragment: Fragment() {
 
-    private val sharedViewModel:SharedViewModel by activityViewModels()
+    private val viewModel: UserListViewModel by activityViewModels()
     private var binding: FragmentUserListBinding ?= null
     private val navHelper: NavControllerHelper = NavControllerHelper()
     private var userListAdapter = UserListAdapter()
@@ -44,7 +42,7 @@ class UserListFragment: Fragment() {
             initUserRecycler()
             initViewModelObserve()
             lifecycleScope.launch {
-                sharedViewModel.userIntent.send(MainIntent.FetchUserList)
+                viewModel.setEvent(MainEvent.FetchUserList)
             }
         }
     }
@@ -65,7 +63,7 @@ class UserListFragment: Fragment() {
 
     private fun FragmentUserListBinding.initUserRecycler() {
         userList.adapter = userListAdapter
-        userListAdapter.setLoadMore(sharedViewModel::fetchUserList)
+        userListAdapter.setLoadMore(viewModel::fetchUserList)
         userListAdapter.setOnItemClick(::onUserItemClick)
         userList.layoutManager = LinearLayoutManager(context)
         userList.addItemDecoration(DividerItemDecoration(context,DividerItemDecoration.VERTICAL))
@@ -73,21 +71,21 @@ class UserListFragment: Fragment() {
 
     private fun FragmentUserListBinding.initViewModelObserve(){
         lifecycleScope.launch {
-            sharedViewModel.state.collect {
-                when(it){
-                    is MainState.Idle->{
+            viewModel.viewState.collect {
+                when(it.userListState){
+                    is UserListState.Idle->{
                         //do nothing~
                     }
-                    is MainState.Loading->{
-                        progressBar.isVisible = it.isLoading
+                    is UserListState.Loading->{
+                        progressBar.isVisible = it.userListState.isLoading
                     }
-                    is MainState.DataFetched->{
-                        userListAdapter.setDataModel(it.result.userList)
-                        progressBar.isVisible = it.isLoading
+                    is UserListState.DataFetched->{
+                        userListAdapter.setDataModel(it.userListState.result.userList)
+                        progressBar.isVisible =  it.userListState.isLoading
                     }
-                    is MainState.Error->{
-                        Toast.makeText(context,it.error, Toast.LENGTH_LONG).show()
-                        progressBar.isVisible = it.isLoading
+                    is UserListState.Error->{
+                        Toast.makeText(context, it.userListState.error, Toast.LENGTH_LONG).show()
+                        progressBar.isVisible =  it.userListState.isLoading
                     }
                 }
             }

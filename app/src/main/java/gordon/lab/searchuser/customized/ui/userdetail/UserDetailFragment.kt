@@ -16,17 +16,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import gordon.lab.searchuser.R
+import gordon.lab.searchuser.customized.protocol.MainEvent
 import gordon.lab.searchuser.databinding.FragmentUserDetailBinding
-import gordon.lab.searchuser.util.MainIntent
-import gordon.lab.searchuser.util.MainState
-import gordon.lab.searchuser.viewmodel.SharedViewModel
+import gordon.lab.searchuser.viewmodel.UserDetailViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
 class UserDetailFragment:Fragment() {
 
-    private val sharedViewModel: SharedViewModel by activityViewModels()
+    private val viewModel: UserDetailViewModel by activityViewModels()
     private var binding: FragmentUserDetailBinding? = null
     private val args: UserDetailFragmentArgs by navArgs()
 
@@ -62,36 +61,38 @@ class UserDetailFragment:Fragment() {
     private fun initUserLayout() {
         args.username.let {
             lifecycleScope.launch {
-                sharedViewModel.userIntent.send(MainIntent.FetchUserDetail(it))
+                viewModel.setEvent(MainEvent.FetchUserDetail(it))
             }
         }
     }
 
     private fun FragmentUserDetailBinding.initViewModelObserve() {
         lifecycleScope.launch {
-            sharedViewModel.state.collect {
-                when(it){
-                    is MainState.Idle->{
+            viewModel.viewState.collect {
+                when(it.userDetailState){
+                    is UserDetailState.Idle->{
                         //do nothing~
                     }
-                    is MainState.Loading->{
-                        progressBar.isVisible = it.isLoading
+                    is UserDetailState.Loading->{
+                        progressBar.isVisible = it.userDetailState.isLoading
                     }
-                    is MainState.DetailFetched->{
-                        progressBar.isVisible = it.isLoading
+                    is UserDetailState.Fetched->{
+                        progressBar.isVisible = it.userDetailState.isLoading
+
+                        val data = it.userDetailState.result
 
                         Glide.with(this@UserDetailFragment)
-                            .load(it.result.avatarUrl)
+                            .load(data.avatarUrl)
                             .circleCrop()
                             .into(imgAvatar)
 
-                        tvUserLogin.text = String.format(getString(R.string.str_detail_login_placeholder),it.result.login)
-                        tvUserName.text = it.result.name
-                        tvUserEmail.text = it.result.email
-                        tvUserLocation.text = it.result.location?:getString(R.string.str_detail_location_unset)
-                        tvUserCompany.text = it.result.company?:getString(R.string.str_detail_company_unset)
-                        tvUserBio.text = it.result.bio?:getString(R.string.str_detail_bio_unset)
-                        val url =it.result.blog
+                        tvUserLogin.text = String.format(getString(R.string.str_detail_login_placeholder),data.login)
+                        tvUserName.text = data.name
+                        tvUserEmail.text = data.email
+                        tvUserLocation.text = data.location?:getString(R.string.str_detail_location_unset)
+                        tvUserCompany.text = data.company?:getString(R.string.str_detail_company_unset)
+                        tvUserBio.text = data.bio?:getString(R.string.str_detail_bio_unset)
+                        val url = data.blog
                             if(URLUtil.isValidUrl(url)){
                                 linkWrapper.isVisible = true
                                 tvUserLink.text = url
@@ -103,9 +104,9 @@ class UserDetailFragment:Fragment() {
                                 }
                             }
                     }
-                    is MainState.Error->{
-                        progressBar.isVisible = it.isLoading
-                        Toast.makeText(context,it.error, Toast.LENGTH_LONG).show()
+                    is UserDetailState.Error->{
+                        progressBar.isVisible = it.userDetailState.isLoading
+                        Toast.makeText(context,it.userDetailState.error, Toast.LENGTH_LONG).show()
                     }
                 }
             }

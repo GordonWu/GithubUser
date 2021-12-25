@@ -4,8 +4,8 @@ import gordon.lab.searchuser.core.SearchUserAppModule.GithubApiProvides
 import gordon.lab.searchuser.data.model.UserItems
 import gordon.lab.searchuser.data.repository.UserListRepository
 import gordon.lab.searchuser.util.MainCoroutineRule
-import gordon.lab.searchuser.util.MainIntent
-import gordon.lab.searchuser.util.MainState
+import gordon.lab.searchuser.customized.protocol.MainEvent
+import gordon.lab.searchuser.customized.ui.userlist.UserListState
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -48,22 +48,22 @@ import org.junit.Test
         val expect = booleanArrayOf(true, true, true , true)
 
         val job = launch {
-            sharedViewModel.userIntent.send(MainIntent.FetchUserList)
+            sharedViewModel.userIntent.send(MainEvent.FetchUserList)
             sharedViewModel.state.collect() {
                 when (it) {
-                    is MainState.Idle -> {
+                    is UserListState.Idle -> {
                         print("A======")
                         actual[0] = true
                     }
-                    is MainState.Loading -> {
+                    is UserListState.Loading -> {
                         print("B======")
                         actual[1] = true
                     }
-                    is MainState.DataFetched -> {
+                    is UserListState.DataFetched -> {
                         print("D======")
                         actual[2] = true
                     }
-                    is MainState.Error -> {
+                    is UserListState.Error -> {
                         print("E======")
                         actual[3] = false
                     }

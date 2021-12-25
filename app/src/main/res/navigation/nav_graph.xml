@@ -19,9 +19,7 @@
         android:name="gordon.lab.searchuser.customized.ui.userdetail.UserDetailFragment"
         android:label="UserDetailFragment"
         tools:layout="@layout/fragment_user_detail">
-        <action
-            android:id="@+id/action_userDetailFragment_to_userListFragment"
-            app:destination="@id/userListFragment" />
+
         <argument
             android:name="username"
             android:defaultValue=""

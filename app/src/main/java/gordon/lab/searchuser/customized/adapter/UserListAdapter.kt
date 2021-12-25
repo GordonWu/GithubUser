@@ -36,8 +36,8 @@ class UserListAdapter:RecyclerView.Adapter<UserListViewHolder>() {
         return dataModel.size
     }
 
-    fun setDataModel(mBookshelf: List<UserItems>) {
-        dataModel.addAll(mBookshelf)
+    fun setDataModel(mUserItems: List<UserItems>) {
+        dataModel.addAll(mUserItems)
         notifyDataSetChanged()
     }
 
