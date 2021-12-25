@@ -45,5 +45,4 @@ object SearchUserAppModule {
                 .build()
                 .create(GithubApi::class.java)
     }
-
 }

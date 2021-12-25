@@ -1,12 +1,17 @@
 package gordon.lab.searchuser.viewmodel
 
 import androidx.lifecycle.ViewModel
-import gordon.lab.searchuser.core.AsyncTaskDelegate
+import androidx.lifecycle.viewModelScope
 import gordon.lab.searchuser.customized.protocol.uiEvent
 import gordon.lab.searchuser.customized.protocol.uiState
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
-abstract class BaseViewModel<Event:uiEvent,State:uiState>(private val asyncTaskDelegate: AsyncTaskDelegate) :ViewModel(){
+abstract class BaseViewModel<Event:uiEvent,State:uiState> :ViewModel(){
+
+    var ui: CoroutineDispatcher = Dispatchers.Main
+    var io: CoroutineDispatcher =  Dispatchers.IO
+    var background: CoroutineDispatcher = Dispatchers.Default
 
     // Create Initial State of View
     private val initialState : State by lazy { onInitState() }
@@ -27,9 +32,27 @@ abstract class BaseViewModel<Event:uiEvent,State:uiState>(private val asyncTaskD
         subscribeEvents()
     }
 
+    fun ViewModel.uiJob(block: suspend CoroutineScope.() -> Unit): Job {
+        return viewModelScope.launch(ui) {
+            block()
+        }
+    }
+
+    fun ViewModel.ioJob(block: suspend CoroutineScope.() -> Unit): Job {
+        return viewModelScope.launch(io) {
+            block()
+        }
+    }
+
+    fun ViewModel.backgroundJob(block: suspend CoroutineScope.() -> Unit): Job {
+        return viewModelScope.launch(background) {
+            block()
+        }
+    }
+
     fun setEvent(event : Event) {
         val newEvent = event
-        asyncTaskDelegate.ioJob { _event.emit(newEvent) }
+        ioJob { _event.emit(newEvent) }
     }
 
     protected fun setState(reduce: State.() -> State) {
@@ -41,7 +64,7 @@ abstract class BaseViewModel<Event:uiEvent,State:uiState>(private val asyncTaskD
      * Start listening to Event
      */
     private fun subscribeEvents() {
-        asyncTaskDelegate.ioJob {
+       ioJob {
            viewEvent.collect {
                onHandleEvent(it)
            }
