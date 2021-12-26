@@ -29,7 +29,7 @@ class UserDetailViewModel @Inject constructor( private val repository: UserDetai
         }
     }
 
-    fun fetchUserDetail(username:String){
+    fun fetchUserDetail(username:String){ 
          asyncDelegate.ioJob {
              setState { copy(userDetailState = UserDetailState.Loading()) }
              try{

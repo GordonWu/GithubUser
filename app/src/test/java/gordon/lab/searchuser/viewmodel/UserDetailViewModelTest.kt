@@ -56,9 +56,12 @@ class UserDetailViewModelTest {
     fun testFetchUserDetailStateData() = testScope.runTest {
 //        api = GithubApiProvides()
         coEvery {  repo.getUserDetail("GordonWu")  }.returns( mockUserDetail )
+
         viewModel = UserDetailViewModel(repo, asyncJunit)
+        assert (viewModel.viewState.value.userDetailState is UserDetailState.Idle)
         viewModel.fetchUserDetail("GordonWu")
         assert (viewModel.viewState.value.userDetailState is UserDetailState.Fetched)
+
         (viewModel.viewState.value.userDetailState as UserDetailState.Fetched).run {
             assert(this.result.avatarUrl == "thisIsAvatarUrl")
             assert(this.result.bio == "thisIsBIO")
