@@ -2,12 +2,13 @@ package gordon.lab.searchuser.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import gordon.lab.searchuser.core.AsyncDelegate
 import gordon.lab.searchuser.customized.protocol.uiEvent
 import gordon.lab.searchuser.customized.protocol.uiState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
-abstract class BaseViewModel<Event:uiEvent,State:uiState> :ViewModel(){
+abstract class BaseViewModel<Event:uiEvent,State:uiState>(private val asyncDelegate : AsyncDelegate) :ViewModel(){
 
     var ui: CoroutineDispatcher = Dispatchers.Main
     var io: CoroutineDispatcher =  Dispatchers.IO
@@ -52,7 +53,7 @@ abstract class BaseViewModel<Event:uiEvent,State:uiState> :ViewModel(){
 
     fun setEvent(event : Event) {
         val newEvent = event
-        ioJob { _event.emit(newEvent) }
+        asyncDelegate.ioJob { _event.emit(newEvent) }
     }
 
     protected fun setState(reduce: State.() -> State) {
@@ -64,7 +65,8 @@ abstract class BaseViewModel<Event:uiEvent,State:uiState> :ViewModel(){
      * Start listening to Event
      */
     private fun subscribeEvents() {
-       ioJob {
+
+        backgroundJob {
            viewEvent.collect {
                onHandleEvent(it)
            }

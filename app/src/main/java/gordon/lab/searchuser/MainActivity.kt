@@ -1,7 +1,6 @@
 package gordon.lab.searchuser
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +19,6 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         val navController = findNavController(R.id.fragmentContainer)
         if(!navController.popBackStack()) {
-            Log.d("gw","fuck")
             super.onBackPressed()
             finish()
         }
