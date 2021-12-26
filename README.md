@@ -1,9 +1,11 @@
 # searchuser
-github search user demo app
-使用 Android Architecture Components 
-(ViewBinding, ViewModel, lifeData, paging3, dagger-hilt)
+github user list app demo
+MVI Architecture improve from MVVM 
 
-圖片載入使用Glide(with GlideModule)
-網路層使用Retrofit2
+use Android Architecture Components 
+(ViewBinding, ViewModel, lifeData, dagger-hilt)
+
+image loading lib: Glide(with GlideModule)
+network lib: Retrofit2
 
 
