@@ -8,10 +8,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
@@ -20,20 +16,10 @@ class UserDetailViewModelTest {
 
     @MockK(relaxed = true)
     lateinit var repo : UserDetailRepository
-//    @MockK(relaxed = true)
-//    lateinit var api: GithubApi
 
+     lateinit var viewModel: UserDetailViewModel
 
-//    @MockK(relaxed = true)
-    lateinit var viewModel: UserDetailViewModel
-
-//    @get:Rule
-//    var coroutineRule = MainCoroutineRule()
-    var asyncJunit = AsyncJunit()
-
-    private val job = Job()
-    private val testDispatcher = StandardTestDispatcher()
-    private val testScope = TestScope(job + testDispatcher)
+    private var asyncJunit = AsyncJunit()
 
     @Before
     fun setup(){
@@ -53,7 +39,7 @@ class UserDetailViewModelTest {
     )
 
     @Test
-    fun testFetchUserDetailStateData() = testScope.runTest {
+    fun testFetchUserDetailStateData() {
 //        api = GithubApiProvides()
         coEvery {  repo.getUserDetail("GordonWu")  }.returns( mockUserDetail )
 
