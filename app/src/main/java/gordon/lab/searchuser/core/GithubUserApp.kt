@@ -27,8 +27,8 @@ class GithubUserApp: Application(){
                     single { provideRetrofit(get()) }
 
 
-                    single { UserDetailRepository(get()) }
-                    single { UserListRepository(get()) }
+                    factory { UserDetailRepository(get()) }
+                    factory { UserListRepository(get()) }
 
                     single<AsyncDelegate> { GithubUserAsyncApp() }
                     viewModel { UserListViewModel(get(),get()) }
