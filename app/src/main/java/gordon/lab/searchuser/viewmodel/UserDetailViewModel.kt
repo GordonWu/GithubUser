@@ -1,14 +1,14 @@
 package gordon.lab.searchuser.viewmodel
 
-import gordon.lab.searchuser.core.AsyncDelegate
+import gordon.lab.searchuser.core.GithubUserAsyncApp
 import gordon.lab.searchuser.customized.protocol.MainEvent
 import gordon.lab.searchuser.customized.protocol.uiState
 import gordon.lab.searchuser.customized.ui.userdetail.UserDetailState
 import gordon.lab.searchuser.data.repository.UserDetailRepository
 
 
-class UserDetailViewModel(private val repository: UserDetailRepository,private val asyncDelegate : AsyncDelegate) :
-    BaseViewModel<MainEvent, UserDetailViewModel.State>(asyncDelegate) {
+class UserDetailViewModel(private val repository: UserDetailRepository,private val asyncApp : GithubUserAsyncApp) :
+    BaseViewModel<MainEvent, UserDetailViewModel.State>(asyncApp) {
 
     data class State(
         val userDetailState: UserDetailState
@@ -28,7 +28,7 @@ class UserDetailViewModel(private val repository: UserDetailRepository,private v
     }
 
     fun fetchUserDetail(username:String){
-         asyncDelegate.ioJob {
+        asyncApp.ioJob {
              setState { copy(userDetailState = UserDetailState.Loading()) }
              try{
                  val result = repository.getUserDetail(username)

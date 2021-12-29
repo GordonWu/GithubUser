@@ -2,7 +2,7 @@ package gordon.lab.searchuser.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import gordon.lab.searchuser.core.AsyncDelegate
+import gordon.lab.searchuser.customized.protocol.AsyncDelegate
 import gordon.lab.searchuser.customized.protocol.uiEvent
 import gordon.lab.searchuser.customized.protocol.uiState
 import kotlinx.coroutines.*

@@ -1,14 +1,14 @@
 package gordon.lab.searchuser.viewmodel
 
-import gordon.lab.searchuser.core.AsyncDelegate
+import gordon.lab.searchuser.core.GithubUserAsyncApp
 import gordon.lab.searchuser.customized.protocol.MainEvent
 import gordon.lab.searchuser.customized.protocol.uiState
 import gordon.lab.searchuser.customized.ui.userlist.UserListState
 import gordon.lab.searchuser.data.repository.UserListRepository
 
 
-class UserListViewModel ( private val repository: UserListRepository, private val asyncDelegate : AsyncDelegate) :
-    BaseViewModel<MainEvent, UserListViewModel.State>(asyncDelegate) {
+class UserListViewModel ( private val repository: UserListRepository, private val asyncApp : GithubUserAsyncApp) :
+    BaseViewModel<MainEvent, UserListViewModel.State>(asyncApp) {
 
     data class State(
         val userListState: UserListState
@@ -28,7 +28,7 @@ class UserListViewModel ( private val repository: UserListRepository, private va
     }
 
     fun fetchUserList(){
-        asyncDelegate.ioJob {
+        asyncApp.ioJob {
             setState { copy(userListState = UserListState.Loading()) }
             try{
                 val result = repository.getUserList()

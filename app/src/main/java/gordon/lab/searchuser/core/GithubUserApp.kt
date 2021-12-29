@@ -5,6 +5,7 @@ import gordon.lab.searchuser.core.network.GithubApi
 import gordon.lab.searchuser.core.network.provideLoggingInterceptor
 import gordon.lab.searchuser.core.network.provideOkHttpClient
 import gordon.lab.searchuser.core.network.provideRetrofit
+import gordon.lab.searchuser.customized.protocol.AsyncDelegate
 import gordon.lab.searchuser.data.repository.UserDetailRepository
 import gordon.lab.searchuser.data.repository.UserListRepository
 import gordon.lab.searchuser.viewmodel.UserDetailViewModel
@@ -29,7 +30,7 @@ class GithubUserApp: Application(){
                     single { UserDetailRepository(get()) }
                     single { UserListRepository(get()) }
 
-                    single { AsyncDelegate() }
+                    single<AsyncDelegate> { GithubUserAsyncApp() }
                     viewModel { UserListViewModel(get(),get()) }
                     viewModel { UserDetailViewModel(get(),get()) }
                 }
