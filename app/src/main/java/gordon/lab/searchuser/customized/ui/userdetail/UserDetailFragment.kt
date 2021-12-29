@@ -105,7 +105,7 @@ class UserDetailFragment:Fragment() {
                     }
                     is UserDetailState.Error->{
                         progressBar.isVisible = it.userDetailState.isLoading
-                        Toast.makeText(context,it.userDetailState.error, Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, it.userDetailState.error, Toast.LENGTH_LONG).show()
                     }
                 }
             }

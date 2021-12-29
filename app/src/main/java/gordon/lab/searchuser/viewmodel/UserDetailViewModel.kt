@@ -2,17 +2,17 @@ package gordon.lab.searchuser.viewmodel
 
 import gordon.lab.searchuser.customized.protocol.AsyncDelegate
 import gordon.lab.searchuser.customized.protocol.MainEvent
-import gordon.lab.searchuser.customized.protocol.uiState
+import gordon.lab.searchuser.customized.protocol.UiState
 import gordon.lab.searchuser.customized.ui.userdetail.UserDetailState
 import gordon.lab.searchuser.data.repository.UserDetailRepository
 
 
-class UserDetailViewModel(private val repository: UserDetailRepository,private val asyncApp : AsyncDelegate) :
+class UserDetailViewModel(private val repository: UserDetailRepository, private val asyncApp : AsyncDelegate) :
     BaseViewModel<MainEvent, UserDetailViewModel.State>(asyncApp) {
 
     data class State(
         val userDetailState: UserDetailState
-    ) : uiState
+    ) : UiState
 
     override fun onInitState(): State {
         return State(UserDetailState.Idle)

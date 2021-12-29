@@ -2,7 +2,7 @@ package gordon.lab.searchuser.viewmodel
 
 import gordon.lab.searchuser.customized.protocol.AsyncDelegate
 import gordon.lab.searchuser.customized.protocol.MainEvent
-import gordon.lab.searchuser.customized.protocol.uiState
+import gordon.lab.searchuser.customized.protocol.UiState
 import gordon.lab.searchuser.customized.ui.userlist.UserListState
 import gordon.lab.searchuser.data.model.UserList
 import gordon.lab.searchuser.data.repository.UserListRepository
@@ -13,7 +13,7 @@ class UserListViewModel ( private val repository: UserListRepository, private va
 
     data class State(
         val userListState: UserListState
-    ) : uiState
+    ) : UiState
 
     override fun onInitState(): State {
         return State(UserListState.Idle)

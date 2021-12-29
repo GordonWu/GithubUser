@@ -2,8 +2,8 @@ package gordon.lab.searchuser.viewmodel
 
 import gordon.lab.searchuser.AsyncJunit
 import gordon.lab.searchuser.customized.ui.userlist.UserListState
-import gordon.lab.searchuser.data.model.ApiResult
 import gordon.lab.searchuser.data.model.UserItems
+import gordon.lab.searchuser.data.model.UserList
 import gordon.lab.searchuser.data.repository.UserListRepository
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -24,8 +24,8 @@ class UserListViewModelTest{
         MockKAnnotations.init(this)
     }
 
-    private fun mockUserList() : ApiResult{
-        val userList = arrayListOf<UserItems>()
+    private fun mockUserList() :UserList{
+        val userList = UserList()
         (0 until 30).forEach {
             userList.add(UserItems(
                 avatarURL = "url${it}",
@@ -34,7 +34,7 @@ class UserListViewModelTest{
             ))
         }
 
-       return ApiResult(userList)
+       return userList
     }
 
     @Test
@@ -47,9 +47,9 @@ class UserListViewModelTest{
         assert (viewModel.viewState.value.userListState is UserListState.Fetched)
 
         (viewModel.viewState.value.userListState as UserListState.Fetched).run {
-            assert(this.result.userList.size == 30)
-            assert(this.result.userList[15].id == 15)
-            assert(this.result.userList.last().id == 29)
+            assert(this.result.size == 30)
+            assert(this.result[15].id == 15)
+            assert(this.result.last().id == 29)
         }
     }
 }

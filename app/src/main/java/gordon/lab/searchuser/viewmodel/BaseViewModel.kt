@@ -1,19 +1,21 @@
 package gordon.lab.searchuser.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import gordon.lab.searchuser.customized.protocol.AsyncDelegate
-import gordon.lab.searchuser.customized.protocol.uiEvent
-import gordon.lab.searchuser.customized.protocol.uiState
+import gordon.lab.searchuser.customized.protocol.UiEvent
+import gordon.lab.searchuser.customized.protocol.UiState
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-abstract class BaseViewModel<Event:uiEvent,State:uiState>(private val asyncDelegate : AsyncDelegate) :ViewModel(){
+abstract class BaseViewModel<Event:UiEvent,State:UiState>(private val asyncDelegate : AsyncDelegate) :ViewModel(){
 
 //    var ui: CoroutineDispatcher = Dispatchers.Main
 //    var io: CoroutineDispatcher =  Dispatchers.IO
-//    var background: CoroutineDispatcher = Dispatchers.Default
+    var background: CoroutineDispatcher = Dispatchers.Default
 
     // Create Initial State of View
     private val initialState : State by lazy { onInitState() }
@@ -46,11 +48,11 @@ abstract class BaseViewModel<Event:uiEvent,State:uiState>(private val asyncDeleg
 //        }
 //    }
 //
-//    fun ViewModel.backgroundJob(block: suspend CoroutineScope.() -> Unit): Job {
-//        return viewModelScope.launch(background) {
-//            block()
-//        }
-//    }
+    fun ViewModel.backgroundJob(block: suspend CoroutineScope.() -> Unit): Job {
+        return viewModelScope.launch(background) {
+            block()
+        }
+    }
 
     fun setEvent(event : Event) {
         val newEvent = event
@@ -66,7 +68,8 @@ abstract class BaseViewModel<Event:uiEvent,State:uiState>(private val asyncDeleg
      * Start listening to Event
      */
     private fun subscribeEvents() {
-        asyncDelegate.ioJob {
+//        asyncDelegate.ioJob {
+        backgroundJob{
            viewEvent.collect {
                onHandleEvent(it)
            }

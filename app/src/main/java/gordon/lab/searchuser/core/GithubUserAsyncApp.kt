@@ -8,9 +8,9 @@ import kotlinx.coroutines.withContext
 
 class GithubUserAsyncApp: AsyncDelegate {
      override fun ioJob(func: suspend () -> Unit) {
-         CoroutineScope(Dispatchers.IO).launch {
-           func()
-       }
+        CoroutineScope(Dispatchers.IO).launch {
+            func()
+        }
      }
 
     override suspend fun uiJob(func: () -> Unit)= withContext(Dispatchers.Main) {
