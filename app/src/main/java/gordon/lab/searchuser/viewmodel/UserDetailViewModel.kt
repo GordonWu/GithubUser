@@ -1,13 +1,13 @@
 package gordon.lab.searchuser.viewmodel
 
-import gordon.lab.searchuser.core.GithubUserAsyncApp
+import gordon.lab.searchuser.customized.protocol.AsyncDelegate
 import gordon.lab.searchuser.customized.protocol.MainEvent
 import gordon.lab.searchuser.customized.protocol.uiState
 import gordon.lab.searchuser.customized.ui.userdetail.UserDetailState
 import gordon.lab.searchuser.data.repository.UserDetailRepository
 
 
-class UserDetailViewModel(private val repository: UserDetailRepository,private val asyncApp : GithubUserAsyncApp) :
+class UserDetailViewModel(private val repository: UserDetailRepository,private val asyncApp : AsyncDelegate) :
     BaseViewModel<MainEvent, UserDetailViewModel.State>(asyncApp) {
 
     data class State(
