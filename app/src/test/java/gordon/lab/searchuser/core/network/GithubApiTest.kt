@@ -1,6 +1,5 @@
 package gordon.lab.searchuser.core.network
 
-import gordon.lab.searchuser.core.SearchUserAppModule
 import gordon.lab.searchuser.data.repository.UserDetailRepository
 import gordon.lab.searchuser.data.repository.UserListRepository
 import io.mockk.MockKAnnotations
@@ -24,7 +23,7 @@ class GithubApiTest {
 
     @Test
     fun getUserList()   {
-        listRepo = UserListRepository(SearchUserAppModule.GithubApiProvides())
+        listRepo = UserListRepository(RetrofitClient.GithubApiProvides())
         //init call
         var data = runBlocking {
             listRepo.getUserList().userList
@@ -47,7 +46,7 @@ class GithubApiTest {
 
     @Test
     fun getUserDetail(){
-        detailRepo = UserDetailRepository(SearchUserAppModule.GithubApiProvides())
+        detailRepo = UserDetailRepository(RetrofitClient.GithubApiProvides())
         //init call
         val data = runBlocking {
             detailRepo.getUserDetail("GordonWu")

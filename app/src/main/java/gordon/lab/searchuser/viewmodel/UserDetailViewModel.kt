@@ -1,15 +1,13 @@
 package gordon.lab.searchuser.viewmodel
 
-import dagger.hilt.android.lifecycle.HiltViewModel
 import gordon.lab.searchuser.core.AsyncDelegate
 import gordon.lab.searchuser.customized.protocol.MainEvent
 import gordon.lab.searchuser.customized.protocol.uiState
 import gordon.lab.searchuser.customized.ui.userdetail.UserDetailState
 import gordon.lab.searchuser.data.repository.UserDetailRepository
-import javax.inject.Inject
 
-@HiltViewModel
-class UserDetailViewModel @Inject constructor( private val repository: UserDetailRepository,private val asyncDelegate : AsyncDelegate) :
+
+class UserDetailViewModel(private val repository: UserDetailRepository,private val asyncDelegate : AsyncDelegate) :
     BaseViewModel<MainEvent, UserDetailViewModel.State>(asyncDelegate) {
 
     data class State(

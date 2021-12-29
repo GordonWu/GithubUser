@@ -10,7 +10,6 @@ import android.webkit.URLUtil
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -19,13 +18,13 @@ import gordon.lab.searchuser.R
 import gordon.lab.searchuser.customized.protocol.MainEvent
 import gordon.lab.searchuser.databinding.FragmentUserDetailBinding
 import gordon.lab.searchuser.viewmodel.UserDetailViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class UserDetailFragment:Fragment() {
 
-    private val viewModel: UserDetailViewModel by activityViewModels()
+    private val viewModel: UserDetailViewModel by viewModel()
     private var binding: FragmentUserDetailBinding? = null
     private val args: UserDetailFragmentArgs by navArgs()
 
@@ -79,30 +78,30 @@ class UserDetailFragment:Fragment() {
                     is UserDetailState.Fetched->{
                         progressBar.isVisible = it.userDetailState.isLoading
 
-                        val data = it.userDetailState.result
+                        it.userDetailState.result.let { data->
+                            Glide.with(this@UserDetailFragment)
+                                .load(data.avatarUrl)
+                                .circleCrop()
+                                .into(imgAvatar)
 
-                        Glide.with(this@UserDetailFragment)
-                            .load(data.avatarUrl)
-                            .circleCrop()
-                            .into(imgAvatar)
-
-                        tvUserLogin.text = String.format(getString(R.string.str_detail_login_placeholder),data.login)
-                        tvUserName.text = data.name
-                        tvUserEmail.text = data.email
-                        tvUserLocation.text = data.location?:getString(R.string.str_detail_location_unset)
-                        tvUserCompany.text = data.company?:getString(R.string.str_detail_company_unset)
-                        tvUserBio.text = data.bio?:getString(R.string.str_detail_bio_unset)
-                        val url = data.blog
+                            tvUserLogin.text = String.format(getString(R.string.str_detail_login_placeholder),data.login)
+                            tvUserName.text = data.name
+                            tvUserEmail.text = data.email
+                            tvUserLocation.text = data.location?:getString(R.string.str_detail_location_unset)
+                            tvUserCompany.text = data.company?:getString(R.string.str_detail_company_unset)
+                            tvUserBio.text = data.bio?:getString(R.string.str_detail_bio_unset)
+                            val url = data.blog
                             if(URLUtil.isValidUrl(url)){
                                 linkWrapper.isVisible = true
                                 tvUserLink.text = url
                                 tvUserLink.setOnClickListener {
-                                val intent = Intent()
-                                intent.action = Intent.ACTION_VIEW
-                                intent.data = Uri.parse(url)
-                                startActivity(intent)
+                                    val intent = Intent()
+                                    intent.action = Intent.ACTION_VIEW
+                                    intent.data = Uri.parse(url)
+                                    startActivity(intent)
                                 }
                             }
+                        }
                     }
                     is UserDetailState.Error->{
                         progressBar.isVisible = it.userDetailState.isLoading

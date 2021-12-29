@@ -1,21 +1,21 @@
 package gordon.lab.searchuser.data.repository
 
 import gordon.lab.searchuser.core.network.GithubApi
-import gordon.lab.searchuser.data.model.ApiResult
 import gordon.lab.searchuser.data.model.UserItems
-import javax.inject.Inject
+import gordon.lab.searchuser.data.model.UserList
 
-class UserListRepository @Inject constructor (private val api: GithubApi) {
+class UserListRepository (private val api: GithubApi) {
 
     private val mUserListCache: MutableList<UserItems> = mutableListOf()
     val userListCache: List<UserItems> get() = mUserListCache
 
-    suspend fun getUserList(): ApiResult {
+    suspend fun getUserList():  UserList  {
         val lastId = if (mUserListCache.isNotEmpty()) {
             mUserListCache.last().id
         } else null
 
-        return ApiResult(api.getUserList(lastId?:0)
-            .also { mUserListCache.addAll(it) })
+        return api.getUserList(lastId?:0)
+            .also { mUserListCache.addAll(it) }
     }
 }
+

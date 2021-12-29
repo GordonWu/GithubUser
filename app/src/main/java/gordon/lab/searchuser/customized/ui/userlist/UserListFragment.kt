@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -17,13 +16,13 @@ import gordon.lab.searchuser.customized.protocol.MainEvent
 import gordon.lab.searchuser.databinding.FragmentUserListBinding
 import gordon.lab.searchuser.util.NavControllerHelper
 import gordon.lab.searchuser.viewmodel.UserListViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class UserListFragment: Fragment() {
 
-    private val viewModel: UserListViewModel by activityViewModels()
+    private val viewModel: UserListViewModel by viewModel()
     private var binding: FragmentUserListBinding ?= null
     private val navHelper: NavControllerHelper = NavControllerHelper()
     private var userListAdapter = UserListAdapter()
@@ -71,7 +70,7 @@ class UserListFragment: Fragment() {
 
     private fun FragmentUserListBinding.initViewModelObserve(){
         lifecycleScope.launch {
-            viewModel.viewState.collect {
+            viewModel.viewState.collect { it ->
                 when(it.userListState){
                     is UserListState.Idle->{
                         //do nothing~
@@ -80,8 +79,10 @@ class UserListFragment: Fragment() {
                         progressBar.isVisible = it.userListState.isLoading
                     }
                     is UserListState.Fetched->{
-                        userListAdapter.setDataModel(it.userListState.result.userList)
-                        progressBar.isVisible =  it.userListState.isLoading
+                        it.userListState.result.apply {
+                            userListAdapter.setDataModel(this)
+                            progressBar.isVisible =  it.userListState.isLoading
+                        }
                     }
                     is UserListState.Error->{
                         Toast.makeText(context, it.userListState.error, Toast.LENGTH_LONG).show()
