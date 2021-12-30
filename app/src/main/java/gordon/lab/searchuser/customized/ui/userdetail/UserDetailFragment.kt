@@ -68,17 +68,17 @@ class UserDetailFragment:Fragment() {
     private fun FragmentUserDetailBinding.initViewModelObserve() {
         lifecycleScope.launch {
             viewModel.viewState.collect {
-                when(it.userDetailState){
+                when(it){
                     is UserDetailState.Idle->{
                         //do nothing~
                     }
                     is UserDetailState.Loading->{
-                        progressBar.isVisible = it.userDetailState.isLoading
+                        progressBar.isVisible = it.isLoading
                     }
                     is UserDetailState.Fetched->{
-                        progressBar.isVisible = it.userDetailState.isLoading
+                        progressBar.isVisible = it.isLoading
 
-                        it.userDetailState.result.let { data->
+                        it.result.let { data->
                             Glide.with(this@UserDetailFragment)
                                 .load(data.avatarUrl)
                                 .circleCrop()
@@ -104,8 +104,8 @@ class UserDetailFragment:Fragment() {
                         }
                     }
                     is UserDetailState.Error->{
-                        progressBar.isVisible = it.userDetailState.isLoading
-                        Toast.makeText(context, it.userDetailState.error, Toast.LENGTH_LONG).show()
+                        progressBar.isVisible = it.isLoading
+                        Toast.makeText(context, it.error, Toast.LENGTH_LONG).show()
                     }
                 }
             }

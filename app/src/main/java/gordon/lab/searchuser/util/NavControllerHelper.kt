@@ -29,6 +29,7 @@ class NavControllerHelper {
         }
     }
 
+//    防止金手指狂點的閘道
     private fun haveNavigated(): Boolean = runBlocking {
         navigationMutex.withLock {
             if (isNavigated) true

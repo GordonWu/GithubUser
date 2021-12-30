@@ -71,22 +71,22 @@ class UserListFragment: Fragment() {
     private fun FragmentUserListBinding.initViewModelObserve(){
         lifecycleScope.launch {
             viewModel.viewState.collect { it ->
-                when(it.userListState){
+                when(it){
                     is UserListState.Idle->{
                         //do nothing~
                     }
                     is UserListState.Loading->{
-                        progressBar.isVisible = it.userListState.isLoading
+                        progressBar.isVisible = it.isLoading
                     }
                     is UserListState.Fetched->{
-                        it.userListState.result.apply {
+                        it.result.apply {
                             userListAdapter.setDataModel(this)
-                            progressBar.isVisible =  it.userListState.isLoading
+                            progressBar.isVisible =  it.isLoading
                         }
                     }
                     is UserListState.Error->{
-                        Toast.makeText(context, it.userListState.error, Toast.LENGTH_LONG).show()
-                        progressBar.isVisible =  it.userListState.isLoading
+                        Toast.makeText(context, it.error, Toast.LENGTH_LONG).show()
+                        progressBar.isVisible =  it.isLoading
                     }
                 }
             }

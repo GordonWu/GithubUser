@@ -13,7 +13,7 @@ class GithubUserAsyncApp: AsyncDelegate {
         }
      }
 
-    override suspend fun uiJob(func: () -> Unit)= withContext(Dispatchers.Main) {
+    override suspend fun uiJob(func: () -> Unit) = withContext(Dispatchers.Main) {
        func()
     }
 }

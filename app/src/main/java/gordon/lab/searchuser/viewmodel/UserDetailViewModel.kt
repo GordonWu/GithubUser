@@ -2,25 +2,20 @@ package gordon.lab.searchuser.viewmodel
 
 import gordon.lab.searchuser.customized.protocol.AsyncDelegate
 import gordon.lab.searchuser.customized.protocol.MainEvent
-import gordon.lab.searchuser.customized.protocol.UiState
 import gordon.lab.searchuser.customized.ui.userdetail.UserDetailState
 import gordon.lab.searchuser.data.repository.UserDetailRepository
 
 
 class UserDetailViewModel(private val repository: UserDetailRepository, private val asyncApp : AsyncDelegate) :
-    BaseViewModel<MainEvent, UserDetailViewModel.State>(asyncApp) {
+    BaseViewModel<MainEvent, UserDetailState>(asyncApp) {
 
-    data class State(
-        val userDetailState: UserDetailState
-    ) : UiState
 
-    override fun onInitState(): State {
-        return State(UserDetailState.Idle)
+    override fun onInitState(): UserDetailState {
+        return UserDetailState.Idle
     }
 
     override fun onHandleEvent(event: MainEvent) {
         when (event) {
-
             is MainEvent.FetchUserDetail -> {
                 fetchUserDetail(event.userName)
             }
@@ -29,13 +24,15 @@ class UserDetailViewModel(private val repository: UserDetailRepository, private 
 
     fun fetchUserDetail(username:String){
         asyncApp.ioJob {
-             setState { copy(userDetailState = UserDetailState.Loading()) }
+             setState { UserDetailState.Loading() }
              try{
                  val result = repository.getUserDetail(username)
-                 setState { copy(userDetailState = UserDetailState.Fetched(result)) }
+                 setState { UserDetailState.Fetched(result) }
             }catch (e:Exception){
-                setState { copy(userDetailState = UserDetailState.Error(e.localizedMessage)) }
+                setState { UserDetailState.Error(e.localizedMessage) }
             }
         }
     }
+
+
 }

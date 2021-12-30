@@ -42,11 +42,11 @@ class UserListViewModelTest{
         coEvery {  repo.getUserList()  }.returns( mockUserList() )
 
         viewModel = UserListViewModel(repo, asyncJunit)
-        assert (viewModel.viewState.value.userListState is UserListState.Idle)
+        assert (viewModel.viewState.value is UserListState.Idle)
         viewModel.fetchUserList()
-        assert (viewModel.viewState.value.userListState is UserListState.Fetched)
+        assert (viewModel.viewState.value is UserListState.Fetched)
 
-        (viewModel.viewState.value.userListState as UserListState.Fetched).run {
+        (viewModel.viewState.value as UserListState.Fetched).run {
             assert(this.result.size == 30)
             assert(this.result[15].id == 15)
             assert(this.result.last().id == 29)

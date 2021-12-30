@@ -44,11 +44,11 @@ class UserDetailViewModelTest {
         coEvery {  repo.getUserDetail("GordonWu")  }.returns( mockUserDetail )
 
         viewModel = UserDetailViewModel(repo, asyncJunit)
-        assert (viewModel.viewState.value.userDetailState is UserDetailState.Idle)
+        assert (viewModel.viewState.value is UserDetailState.Idle)
         viewModel.fetchUserDetail("GordonWu")
-        assert (viewModel.viewState.value.userDetailState is UserDetailState.Fetched)
+        assert (viewModel.viewState.value is UserDetailState.Fetched)
 
-        (viewModel.viewState.value.userDetailState as UserDetailState.Fetched).run {
+        (viewModel.viewState.value as UserDetailState.Fetched).run {
             assert(this.result.avatarUrl == "thisIsAvatarUrl")
             assert(this.result.bio == "thisIsBIO")
             assert(this.result.blog == "thisIsBlog")

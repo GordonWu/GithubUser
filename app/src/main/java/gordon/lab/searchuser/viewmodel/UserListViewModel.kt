@@ -2,20 +2,15 @@ package gordon.lab.searchuser.viewmodel
 
 import gordon.lab.searchuser.customized.protocol.AsyncDelegate
 import gordon.lab.searchuser.customized.protocol.MainEvent
-import gordon.lab.searchuser.customized.protocol.UiState
 import gordon.lab.searchuser.customized.ui.userlist.UserListState
 import gordon.lab.searchuser.data.repository.UserListRepository
 
 
 class UserListViewModel ( private val repository: UserListRepository, private val asyncApp : AsyncDelegate) :
-    BaseViewModel<MainEvent, UserListViewModel.State>(asyncApp) {
+    BaseViewModel<MainEvent, UserListState>(asyncApp) {
 
-    data class State(
-        val userListState: UserListState
-    ) : UiState
-
-    override fun onInitState(): State {
-        return State(UserListState.Idle)
+    override fun onInitState(): UserListState {
+        return UserListState.Idle
     }
 
     override fun onHandleEvent(event: MainEvent) {
@@ -30,12 +25,12 @@ class UserListViewModel ( private val repository: UserListRepository, private va
 
     fun fetchUserList(){
         asyncApp.ioJob {
-            setState { copy(userListState = UserListState.Loading()) }
+            setState { UserListState.Loading() }
             try{
                 val result = repository.getUserList()
-                setState { copy(userListState = UserListState.Fetched(result)) }
+                setState { UserListState.Fetched(result) }
              }catch (e:Exception){
-                setState { copy(userListState = UserListState.Error(e.localizedMessage)) }
+                setState {  UserListState.Error(e.localizedMessage) }
             }
         }
     }
